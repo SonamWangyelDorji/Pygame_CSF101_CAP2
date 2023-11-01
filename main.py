@@ -15,7 +15,7 @@ YELLOW = (255, 255, 0)
 BORDER = pygame.Rect(WIDTH//2 - 5, 0, 10, HEIGHT)
 
 BULLET_HIT_SOUND = pygame.mixer.Sound('Assets/Grenade+1.mp3')
-BULLET_FIRE_SOUND = pygame.mixer.Sound('Assets/Gun+Silencer.mp3')
+BULLET_FIRE_SOUND = pygame.mixer.Sound('/Users/sonamwangyeldorji/Desktop/Stellar Showdown/Assets/Fire Sound .mp3')
 
 HEALTH_FONT = pygame.font.SysFont('comicsans', 40)
 WINNER_FONT = pygame.font.SysFont('comicsans', 100)
@@ -114,6 +114,70 @@ def draw_winner(text):
     pygame.time.delay(5000)
 
 
+
+def home_screen():
+    pygame.mixer.music.load('Assets/soundtrack home screen.mp3')  
+    pygame.mixer.music.play(-1)  
+
+    run = True
+    run = True
+    while run:
+        WIN.blit(SPACE, (0, 0))
+        title_text = WINNER_FONT.render("Stellar Showdown", 1, WHITE)
+        WIN.blit(title_text, (WIDTH / 2 - title_text.get_width() / 2, 50))
+
+        start_text = HEALTH_FONT.render("Start", 1, WHITE)
+        WIN.blit(start_text, (WIDTH / 2 - start_text.get_width() / 2, 200))
+
+        quit_text = HEALTH_FONT.render("Quit", 1, WHITE)
+        WIN.blit(quit_text, (WIDTH / 2 - quit_text.get_width() / 2, 300))
+    
+        font_for_instruction_text = pygame.font.Font(None, 26)
+        instruction_text = font_for_instruction_text.render("C for yellow to shoot and L for red to shoot",1, WHITE)
+        WIN.blit(instruction_text,(300,400))
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+
+                if WIDTH / 2 - start_text.get_width() / 2 <= mouse_x <= WIDTH / 2 + start_text.get_width() / 2 and 200 <= mouse_y <= 200 + start_text.get_height():
+                    run = False  
+                    pygame.mixer.music.stop()
+                    main()  
+
+                elif WIDTH / 2 - quit_text.get_width() / 2 <= mouse_x <= WIDTH / 2 + quit_text.get_width() / 2 and 300 <= mouse_y <= 300 + quit_text.get_height():
+                    run = False  
+                    pygame.quit()
+                    pygame.mixer.music.stop()
+                    quit()
+def pause_screen():
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+
+        pause_text = HEALTH_FONT.render("Paused", 1, WHITE)
+        WIN.blit(pause_text, (WIDTH / 2 - pause_text.get_width() / 2, HEIGHT / 2 - pause_text.get_height() / 2))
+        resume_text = HEALTH_FONT.render("Press ESC to Resume or Q to Quit", 1, WHITE)
+        WIN.blit(resume_text, (WIDTH / 2 - resume_text.get_width() / 2, HEIGHT / 2 + 50))
+        pygame.display.update()
+
 def main():
     red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
     yellow = pygame.Rect(100, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
@@ -125,6 +189,9 @@ def main():
     yellow_health = 10
 
     clock = pygame.time.Clock()
+    pygame.mixer.music.load('Assets/in game music.mp3')  
+    pygame.mixer.music.play(-1)
+    
     run = True
     while run:
         clock.tick(FPS)
@@ -132,6 +199,10 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pause_screen()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c and len(yellow_bullets) < MAX_BULLETS:
@@ -176,6 +247,5 @@ def main():
 
     main()
 
-
 if __name__ == "__main__":
-    main()
+    home_screen()
